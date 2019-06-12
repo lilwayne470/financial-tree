@@ -1,101 +1,76 @@
 import { render } from 'react-dom';
 import 'react-sortable-tree/style.css';
 /* eslint-disable react/no-multi-comp */
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, DragSource } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { SortableTreeWithoutDndContext as SortableTree } from 'react-sortable-tree';
+import { SortableTreeWithoutDndContext as SortableTree, getTreeFromFlatData } from 'react-sortable-tree';
+import TreeTitle from './TreeTitle'
 
 import Table from './Table';
 
 
-// -------------------------
-// Create an drag source component that can be dragged into the tree
-// https://react-dnd.github.io/react-dnd/docs-drag-source.html
-// -------------------------
-// This type must be assigned to the tree via the `dndType` prop as well
+
 const externalNodeType = 'yourNodeType';
-const externalNodeSpec = {
-  // This needs to return an object with a property `node` in it.
-  // Object rest spread is recommended to avoid side effects of
-  // referencing the same object in different trees.
-  beginDrag: componentProps => ({ node: { ...componentProps.node } }),
-};
-const externalNodeCollect = (connect /* , monitor */) => ({
-  connectDragSource: connect.dragSource(),
-  // Add props via react-dnd APIs to enable more visual
-  // customization of your component
-  // isDragging: monitor.isDragging(),
-  // didDrop: monitor.didDrop(),
-});
 
+const apiData = [
+  { id: '1', name: 'Capital expenditures (capex)', parent: null },
+  { id: '2', name: 'Operational expenditures (opex)', parent: null },
+  { id: '3', name: 'Revenues', parent: null },
+  { id: '4', name: 'Infrastructure', parent: 1 },
+  { id: '5', name: 'Equipment', parent: 1 },
+  { id: '6', name: 'Processing cost', parent: 2 },
+  { id: '7', name: 'Mining cost', parent: 2 },
+  { id: '8', name: 'Transportation costs', parent: 2 },
+  { id: '9', name: 'Mining cost', parent: 2 },
+];
 
-function externalNodeBaseComponent(props) {
-    const { connectDragSource, node } = props;
-
-    return connectDragSource(
-      <div
-        style={{
-          display: 'inline-block',
-          padding: '3px 5px',
-          background: 'blue',
-          color: 'white',
-        }}
-      >
-        {node.title}
-      </div>,
-      { dropEffect: 'copy' }
-    );
+const getTreeData = () => {
+  return getTreeFromFlatData({
+    flatData: apiData.map(node => ({ ...node, title: node.name })),
+    getKey: node => node.id, // resolve a node's key
+    getParentKey: node => node.parent, // resolve a node's parent's key
+    rootKey: null, // The value of the parent key when there is no parent (i.e., at root level)
+  })
 }
 
-externalNodeBaseComponent.propTypes = {
-  node: PropTypes.shape({ title: PropTypes.string }).isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-};
-const YourExternalNodeComponent = DragSource(
-  externalNodeType,
-  externalNodeSpec,
-  externalNodeCollect
-)(externalNodeBaseComponent);
-
-class UnwrappedApp extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      treeData: [{ title: 'CapEX' }, { title: 'OpEX' }],
-      tableData: [
-        ['', 'Tesla', 'Nissan', 'Toyota', 'Honda', 'Mazda', 'Ford'],
-        ['2017', 10, 11, 12, 13, 15, 16],
-        ['2018', 10, 11, 12, 13, 15, 16],
-        ['2019', 10, 11, 12, 13, 15, 16],
-        ['2020', 10, 11, 12, 13, 15, 16],
-        ['2021', 10, 11, 12, 13, 15, 16]
-      ],
-    };
+const generatedNodeProps = node => {
+  console.log(node);
+  return {
+    title: <TreeTitle name={node.node.name} />,
   }
+}
 
+function FinancialTree(props) {
 
-  render() {
+    const [state, setState] = useState(null);
+    
+
+    useEffect(() => {
+      const InitialTreeData = getTreeData();
+      setState({treeData: InitialTreeData})
+    }, []);
+
     return (
       <div style={{display:'flex'}}>
         <div style={{ height: 300, width: '30%' }}>
+          {state &&
           <SortableTree
-            treeData={this.state.treeData}
-            onChange={treeData => this.setState({ treeData })}
+            treeData={state.treeData}
+            onChange={treeData => setState({ treeData })}
+            generateNodeProps = {generatedNodeProps}
             dndType={externalNodeType}
-          />
+          />}
         </div>
         <div>
           <Table />
         </div>
       </div>
     );
-  }
 }
 
-const App = DragDropContext(HTML5Backend)(UnwrappedApp);
+const App = DragDropContext(HTML5Backend)(FinancialTree);
 export default App;
 
 render(<App />, document.getElementById('root'));

@@ -22,9 +22,9 @@ const styles = theme => ({
 });
 
 let id = 0;
-function createData(title, calories, fat, carbs, protein) {
+function createData(title, description, category, formula, target) {
   id += 1;
-  return { id, title, calories, fat, carbs, protein };
+  return { id, title, description, category, formula, target };
 }
 
 const externalNodeType = 'yourNodeType';
@@ -51,10 +51,10 @@ function externalNodeBaseComponent(props) {
             <TableCell component="th" scope="row">
             {node.title}
             </TableCell>
-            <TableCell align="right">{node.calories}</TableCell>
-            <TableCell align="right">{node.fat}</TableCell>
-            <TableCell align="right">{node.carbs}</TableCell>
-            <TableCell align="right">{node.protein}</TableCell>
+            <TableCell align="right">{node.description}</TableCell>
+            <TableCell align="right">{node.category}</TableCell>
+            <TableCell align="right">{node.formula}</TableCell>
+            <TableCell align="right">{node.target}</TableCell>
         </TableRow>
     );
 }
@@ -85,11 +85,11 @@ function SimpleTable(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat (g)</TableCell>
-            <TableCell align="right">Carbs (g)</TableCell>
-            <TableCell align="right">Protein (g)</TableCell>
+            <TableCell>Code</TableCell>
+            <TableCell align="right">Description</TableCell>
+            <TableCell align="right">Financial Category</TableCell>
+            <TableCell align="right">Formula</TableCell>
+            <TableCell align="right">Applied to</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
