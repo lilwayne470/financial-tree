@@ -39,6 +39,7 @@ const styles = theme => ({
     name: {
         fontSize: theme.typography.subtitle1.fontSize,
         paddingLeft: 30,
+        marginRight: 20,
     },
     icnbutton: {
         position: 'absolute',
@@ -58,10 +59,12 @@ const useEnhancer = pipe(
                 props.onCommit(props.inputValue);
                 props.setIsEditing(false);
             });
+            props.setShowCheckBox(true);
         },
         handleEdit: props => e => {
             e && e.stopPropagation();
             props.setIsEditing(true);
+            props.setShowCheckBox(false);
         },
         handleInputChange: props => e => {
             props.setInputValue(e.target.value);
@@ -72,6 +75,7 @@ const useEnhancer = pipe(
                 props.setInputValue(props.value);
                 props.setIsEditing(false);
             });
+            props.setShowCheckBox(true);
         },
     }),
     makeProps(props => ({
