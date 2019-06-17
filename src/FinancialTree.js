@@ -5,13 +5,19 @@ import PropTypes from 'prop-types';
 import { DragDropContext, DragSource } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { 
-        SortableTreeWithoutDndContext as SortableTree,
-        getTreeFromFlatData, 
-        changeNodeAtPath, 
-        removeNodeAtPath 
-    } from 'react-sortable-tree';
-import TreeTitle from './TreeTitle'
+    SortableTreeWithoutDndContext as SortableTree,
+    getTreeFromFlatData, 
+    changeNodeAtPath, 
+    removeNodeAtPath,
+    addNodeUnderParent
+  } from 'react-sortable-tree';
 
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+
+import TreeTitle from './TreeTitle';
 import Table from './Table';
 import { getRawData } from './data/FinancialData';
 import TreeFilterBar from './TreeFilterBar';
@@ -41,8 +47,9 @@ function FinancialTree(props) {
       setState({treeData: InitialTreeData})
     }, []);
 
-    const commitName = (title, node, path, nodeKey) => {
-        const getNodeKey = () => nodeKey;
+    const getNodeKey = ({ node }) => node.eid;
+
+    const commitName = (title, node, path) => {
 
         setState(state => ({
           treeData: changeNodeAtPath({
@@ -54,10 +61,44 @@ function FinancialTree(props) {
         }));
     }
 
-    const generatedNodeProps = ({ node, path }) => {
-      console.log(node, path, node.eid);
+    const generatedNodeProps = (params) => {
+      const { path } = params;
       return {
-        title: <TreeTitle commitName={commitName} node={node} path={path} />,
+        title: <TreeTitle commitName={commitName} {...params} />,
+        buttons: [
+          <IconButton 
+            aria-label="Add" 
+            onClick={() =>
+              setState(state => ({
+                treeData: addNodeUnderParent({
+                  treeData: state.treeData,
+                  parentKey: path[path.length - 1],
+                  expandParent: true,
+                  getNodeKey,
+                  newNode: {
+                    title: `New Financial cat`,
+                  },
+                }).treeData,
+              }))
+            }
+          >
+            <AddIcon fontSize="small" />
+          </IconButton>,
+          <IconButton 
+            aria-label="Delete" 
+            onClick={() =>
+              setState(state => ({
+                treeData: removeNodeAtPath({
+                  treeData: state.treeData,
+                  path,
+                  getNodeKey,
+                }),
+              }))
+            }
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        ]
       }
     }
 

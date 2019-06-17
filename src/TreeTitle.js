@@ -38,7 +38,7 @@ function TreeTitle ({node, path, commitName, classes}) {
             <EditableText
                 value={name}
                 setShowCheckBox={setShowCheckBox}
-                onCommit={name => commitName(name, node, path, node.eid)}
+                onCommit={name => commitName(name, node, path)}
             />
         </div>
     )

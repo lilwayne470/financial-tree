@@ -45,7 +45,7 @@ const styles = theme => ({
     icnbutton: {
         position: 'absolute',
         right: -5,
-        top: -15,
+        top: -10,
     },
     deleteConf: {
         top: 10,
@@ -126,20 +126,20 @@ export function EditableText(props) {
                 {(isEditing || visible) &&
                     (!isEditing ? (
                         <Tooltip title="Edit" placement="top">
-                            <IconButton onClick={handleEdit} data-testid="toggle" color="inherit" size="small">
-                                <EditIcon />
+                            <IconButton onClick={handleEdit} data-testid="toggle" color="inherit">
+                                <EditIcon  fontSize="small"/>
                             </IconButton>
                         </Tooltip>
                     ) : canCommit ? (
                         <Tooltip title="Save" placement="top">
                             <IconButton onClick={handleCommit} data-testid="save" color="inherit" className={classes.deleteConf}>
-                                <Checkmark className={classes.checkmark} />
+                                <Checkmark className={classes.checkmark}   fontSize="small"/>
                             </IconButton>
                         </Tooltip>
                     ) : (
                         <Tooltip title="Cancel" placement="top">
                             <IconButton onClick={handleReset} data-testid="cancel" color="inherit" className={classes.deleteConf}>
-                                <Clear />
+                                <Clear fontSize="small" />
                             </IconButton>
                         </Tooltip>
                     ))}
