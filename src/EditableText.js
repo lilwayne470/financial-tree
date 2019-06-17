@@ -39,13 +39,17 @@ const styles = theme => ({
     name: {
         fontSize: theme.typography.subtitle1.fontSize,
         paddingLeft: 30,
-        marginRight: 20,
+        marginRight: 10,
+        paddingRight: 30,
     },
     icnbutton: {
         position: 'absolute',
-        right: -30,
+        right: -5,
         top: -15,
     },
+    deleteConf: {
+        top: 10,
+    }
 });
 
 const useEnhancer = pipe(
@@ -122,19 +126,19 @@ export function EditableText(props) {
                 {(isEditing || visible) &&
                     (!isEditing ? (
                         <Tooltip title="Edit" placement="top">
-                            <IconButton onClick={handleEdit} data-testid="toggle" color="inherit">
+                            <IconButton onClick={handleEdit} data-testid="toggle" color="inherit" size="small">
                                 <EditIcon />
                             </IconButton>
                         </Tooltip>
                     ) : canCommit ? (
                         <Tooltip title="Save" placement="top">
-                            <IconButton onClick={handleCommit} data-testid="save" color="inherit">
+                            <IconButton onClick={handleCommit} data-testid="save" color="inherit" className={classes.deleteConf}>
                                 <Checkmark className={classes.checkmark} />
                             </IconButton>
                         </Tooltip>
                     ) : (
                         <Tooltip title="Cancel" placement="top">
-                            <IconButton onClick={handleReset} data-testid="cancel" color="inherit">
+                            <IconButton onClick={handleReset} data-testid="cancel" color="inherit" className={classes.deleteConf}>
                                 <Clear />
                             </IconButton>
                         </Tooltip>

@@ -10,24 +10,26 @@ const apiData = [
     { id: '9', name: 'Mining cost', parent: 2 },
   ];
 
-export const getRawData = () => {
-   return apiData.map( row => ({
-        eid: row.id,
-        type: "FinancialCategory",
-        parameters: {
-            active: {
-                param_value: true
-            },
-            code: {
-                param_value: row.name.toUpperCase(),
-            },
-            name: {
-                param_value: row.name
-            },
-            parent: {
-                param_value: row.parent
-            }
+export const getNodeTemplate = row => ({
+    eid: row.id,
+    type: "FinancialCategory",
+    parameters: {
+        active: {
+            param_value: true
         },
-        class: "Soft"
-   }));
+        code: {
+            param_value: row.name.toUpperCase(),
+        },
+        name: {
+            param_value: row.name
+        },
+        parent: {
+            param_value: row.parent
+        }
+    },
+    class: "Soft"
+});
+
+export const getRawData = () => {
+   return apiData.map( row => getNodeTemplate(row));
 }

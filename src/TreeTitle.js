@@ -1,19 +1,39 @@
 import React, { useState } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import EditableText from "./EditableText";
+import { withStyles } from '@material-ui/core/styles';
 
 
-export default function TreeTitle ({node, path, commitName}) {
+const styles = () => ({
+    wrapper: {
+        width: '100%', 
+        position: 'relative'
+    },
+    checkBox: {
+        position:'absolute', 
+        left: -15, 
+        top: -12
+    },
+  });
+
+
+
+function TreeTitle ({node, path, commitName, classes}) {
     const { title:name } = node;
 
     const [ selected, setSelected ] = useState(false);
     const [ showCheckBox, setShowCheckBox ] = useState(true);
+
+    const toggleSelection = () => {
+        setSelected(!selected);
+    }
+
     return (
-        <div style={{width: '100%', position: 'relative'}}>
+        <div className={classes.wrapper}>
             {showCheckBox && <Checkbox
                 checked={selected}
-                onChange={() =>setSelected(!selected)}
-                style={{position:'absolute', left: -15, top: -12}}
+                onChange={toggleSelection}
+                className={classes.checkBox}
             />}
             <EditableText
                 value={name}
@@ -24,3 +44,5 @@ export default function TreeTitle ({node, path, commitName}) {
     )
 
 }
+
+export default withStyles(styles)(TreeTitle)
