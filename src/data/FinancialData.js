@@ -15,7 +15,7 @@ export const getNodeTemplate = row => ({
     type: "FinancialCategory",
     parameters: {
         active: {
-            param_value: true
+            param_value: row.active || false,
         },
         code: {
             param_value: row.name.toUpperCase(),

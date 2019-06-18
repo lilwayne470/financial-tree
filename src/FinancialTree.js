@@ -20,12 +20,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TreeTitle from './TreeTitle';
 import Table from './Table';
 import { getRawData } from './data/FinancialData';
-import TreeFilterBar from './TreeFilterBar';
+import TreeFilterBar, { searchInit } from './TreeFilterBar';
 
 
 
 
 const externalNodeType = 'yourNodeType';
+
+export const getNodeKey = ({ node }) => node.eid;
 
 const getTreeData = () => {
   return getTreeFromFlatData({
@@ -40,26 +42,58 @@ const getTreeData = () => {
 function FinancialTree(props) {
 
     const [state, setState] = useState(null);
-    
+    const [searchState, setSearchState] = useState(searchInit);
 
+    const { searchString, searchFocusIndex, searchFoundCount } = searchState;
+    
     useEffect(() => {
       const InitialTreeData = getTreeData();
       setState({treeData: InitialTreeData})
     }, []);
 
-    const getNodeKey = ({ node }) => node.eid;
 
-    const commitName = (title, node, path) => {
-
-        setState(state => ({
-          treeData: changeNodeAtPath({
-            treeData: state.treeData,
-            path,
-            getNodeKey,
-            newNode: { ...node, title, parameters:{ ...node.parameters, name: {param_value: title}} },
-          }),
-        }));
+    const handleUpdate = (params) => {
+      const {newNode, path} = params;
+      setState(state => ({
+        treeData: changeNodeAtPath({
+          treeData: state.treeData,
+          path,
+          getNodeKey,
+          newNode: newNode,
+        }),
+      }));
     }
+
+    const handleDelete = (params) => {
+      const {path} = params;
+      setState(state => ({
+        treeData: removeNodeAtPath({
+          treeData: state.treeData,
+          path,
+          getNodeKey,
+        }),
+      }))
+    }
+
+    const handleCreate = (params) => {
+      const {path} = params;
+      setState(state => ({
+        treeData: addNodeUnderParent({
+          treeData: state.treeData,
+          parentKey: path[path.length - 1],
+          expandParent: true,
+          getNodeKey,
+          newNode: {
+            title: `New Financial cat`,
+          },
+        }).treeData,
+      }))
+    }
+
+  const commitName = (title, node, path) => {
+      const newNode = { ...node, title, parameters:{ ...node.parameters, name: {param_value: title}} };
+      handleUpdate({newNode, path});
+  }
 
     const generatedNodeProps = (params) => {
       const { path } = params;
@@ -68,33 +102,13 @@ function FinancialTree(props) {
         buttons: [
           <IconButton 
             aria-label="Add" 
-            onClick={() =>
-              setState(state => ({
-                treeData: addNodeUnderParent({
-                  treeData: state.treeData,
-                  parentKey: path[path.length - 1],
-                  expandParent: true,
-                  getNodeKey,
-                  newNode: {
-                    title: `New Financial cat`,
-                  },
-                }).treeData,
-              }))
-            }
+            onClick={() => handleCreate({path})}
           >
             <AddIcon fontSize="small" />
           </IconButton>,
           <IconButton 
             aria-label="Delete" 
-            onClick={() =>
-              setState(state => ({
-                treeData: removeNodeAtPath({
-                  treeData: state.treeData,
-                  path,
-                  getNodeKey,
-                }),
-              }))
-            }
+            onClick={() => handleDelete({path})}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -102,16 +116,32 @@ function FinancialTree(props) {
       }
     }
 
+    const customSearchMethod = ({ node, searchQuery }) =>
+      searchQuery &&
+      node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+
+
+    const searchFinishCallBack = matches =>
+            setSearchState({ ...searchState,
+              searchFoundCount: matches.length,
+              searchFocusIndex:
+                matches.length > 0 ? searchFocusIndex % matches.length : 0,
+            })
+
     return (
       <div style={{display:'flex'}}>
-        <div style={{ height: 300, width: '30%' }}>
-            {state && <TreeFilterBar treeData={state.treeData} setState={setState}/>}
+        <div style={{ height: 500, width: '30%' }}>
+            {state && <TreeFilterBar treeData={state.treeData} {...{setState, searchState, setSearchState}} />}
           {state &&
           <SortableTree
             treeData={state.treeData}
             onChange={treeData => setState({ treeData })}
             getNodeKey={({ node }) => node.eid}
             generateNodeProps = {generatedNodeProps}
+            searchMethod={customSearchMethod}
+            searchQuery={searchString}
+            searchFocusOffset={searchFocusIndex}
+            searchFinishCallback={searchFinishCallBack}
             dndType={externalNodeType}
           />}
         </div>

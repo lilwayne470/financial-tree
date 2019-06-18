@@ -19,9 +19,9 @@ const styles = () => ({
 
 
 function TreeTitle ({node, path, commitName, classes}) {
-    const { title:name } = node;
+    const { title:name, parameters } = node;
 
-    const [ selected, setSelected ] = useState(false);
+    const [ selected, setSelected ] = useState(parameters.active.param_value);
     const [ showCheckBox, setShowCheckBox ] = useState(true);
 
     const toggleSelection = () => {
