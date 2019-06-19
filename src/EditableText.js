@@ -28,10 +28,11 @@ const styles = theme => ({
         background: theme.palette.background.default,
         border: `1px solid ${theme.palette.border}`,
         borderRadius: '4px',
-        padding: theme.spacing.unit / 2,
+        padding: 3,
         paddingLeft: theme.spacing.unit,
         fontSize: 'inherit',
         textAlign: 'inherit',
+        maxHeight: 25,
     },
     checkmark: {
         color: 'green',
@@ -48,7 +49,7 @@ const styles = theme => ({
         top: -10,
     },
     deleteConf: {
-        top: 10,
+        top: 0,
     }
 });
 

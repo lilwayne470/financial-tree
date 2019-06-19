@@ -11,6 +11,7 @@ import {
     removeNodeAtPath,
     addNodeUnderParent
   } from 'react-sortable-tree';
+import CustomTheme from './theme';
 
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -134,6 +135,7 @@ function FinancialTree(props) {
             {state && <TreeFilterBar treeData={state.treeData} {...{setState, searchState, setSearchState}} />}
           {state &&
           <SortableTree
+          theme={CustomTheme}
             treeData={state.treeData}
             onChange={treeData => setState({ treeData })}
             getNodeKey={({ node }) => node.eid}

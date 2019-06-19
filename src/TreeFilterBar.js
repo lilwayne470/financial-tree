@@ -21,7 +21,8 @@ const styles = theme => ({
       padding: '2px 4px',
       display: 'flex',
       alignItems: 'center',
-      width: 400,
+      width: 300,
+      height: 30,
     },
     button: {
       margin: theme.spacing.unit,
@@ -31,7 +32,7 @@ const styles = theme => ({
       flex: 1,
     },
     iconButton: {
-      padding: 10,
+      padding: 3,
     },
     divider: {
       width: 1,
