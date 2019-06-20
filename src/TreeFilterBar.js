@@ -61,6 +61,13 @@ const getNextId = (params) => {
   return (Math.max(...IDsList) + 1);
 }
 
+export const generateNewNode = (treeData, parent) => {
+  const title = `New Financial cat`;
+  const id = getNextId({treeData});
+  const node = getNodeTemplate({name:title, parent, id });
+  return {title, ...node}
+}
+
 function TreeFilterBar(props) {
     const { treeData, setState, classes, searchState, setSearchState } = props;
 
@@ -86,14 +93,12 @@ function TreeFilterBar(props) {
       });
 
     const addCategory = () => {
-      const title = `New Financial cat`;
       const parent = null;
-      const id = getNextId({treeData});
-      const node = getNodeTemplate({name:title, parent, id });
-      
+      const node = generateNewNode(treeData, parent);
+      console.log(node);
       setState(() => ({
           treeData: treeData.concat({
-            title, ...node
+            title:node.title, ...node
           }),
       }))
     }

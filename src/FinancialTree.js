@@ -20,8 +20,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import TreeTitle from './TreeTitle';
 import Table from './Table';
-import { getRawData } from './data/FinancialData';
-import TreeFilterBar, { searchInit } from './TreeFilterBar';
+import { getRawData, getNodeTemplate } from './data/FinancialData';
+import TreeFilterBar, { searchInit, generateNewNode } from './TreeFilterBar';
 
 
 
@@ -78,15 +78,15 @@ function FinancialTree(props) {
 
     const handleCreate = (params) => {
       const {path} = params;
+      const parentKey = path[path.length - 1];
+
       setState(state => ({
         treeData: addNodeUnderParent({
           treeData: state.treeData,
-          parentKey: path[path.length - 1],
+          parentKey,
           expandParent: true,
           getNodeKey,
-          newNode: {
-            title: `New Financial cat`,
-          },
+          newNode: generateNewNode(state.treeData, parentKey),
         }).treeData,
       }))
     }
